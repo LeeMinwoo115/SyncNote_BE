@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env.properties
   profiles:
     active: dev
   thymeleaf:
@@ -23,6 +25,10 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
 
 springdoc:
   default-produces-media-type: application/json
