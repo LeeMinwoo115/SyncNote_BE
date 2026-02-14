@@ -25,4 +25,9 @@ public class HomeController {
 			</div>
 			""".formatted(localhost.getHostAddress(), localhost.getHostName());
     }
+
+	@GetMapping("/api/v1/test")
+	public String testFetch() {
+		return "Test Api for Fetch Test";
+	}
 }
