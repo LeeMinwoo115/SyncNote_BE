@@ -1,7 +1,9 @@
 package com.syncnote.domain.home.controller;
 
+import com.syncnote.domain.home.dto.TestResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +29,7 @@ public class HomeController {
     }
 
 	@GetMapping("/api/v1/test")
-	public String testFetch() {
-		return "Test Api for Fetch Test";
+	public ResponseEntity<TestResponseDto> testFetch() {
+		return ResponseEntity.ok(new TestResponseDto("테스트 API 호출 성공"));
 	}
 }
