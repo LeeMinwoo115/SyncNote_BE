@@ -1,0 +1,1 @@
+ALTER SEQUENCE public.user_seq INCREMENT BY 100;

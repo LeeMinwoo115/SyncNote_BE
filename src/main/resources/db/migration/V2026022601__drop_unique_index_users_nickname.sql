@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS public.uk_users_nickname_active;
