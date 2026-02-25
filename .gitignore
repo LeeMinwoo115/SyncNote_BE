@@ -40,8 +40,11 @@ out/
 db_dev.mv.db
 db_dev.trace.db
 
-.env.properties
-
-# Application configuration files
-application.yml
 application-*.yml
+!application-prod.yml
+
+# 로컬 전용 파일
+.env.properties
+application-dev.yml
+application-local.yml
+application-test.yml
