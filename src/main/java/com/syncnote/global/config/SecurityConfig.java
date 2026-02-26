@@ -32,7 +32,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/health", "/actuator/health").permitAll()
+                        .requestMatchers("/health", "/actuator/health", "/github/webhook").permitAll()
                         .anyRequest().permitAll()
                 );
 

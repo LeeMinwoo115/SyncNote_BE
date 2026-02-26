@@ -17,7 +17,7 @@ public record SignupRequest(
         String email,
 
         @NotBlank(message = "비밀번호는 필수입니다.")
-        @Size(min = 8, max = 30, message = "비밀번호는 8~30 글자여야 합니다.")
+        @Size(min = 8, max = 64, message = "비밀번호는 최소 8 글자여야 합니다.")
         @Schema(
                 description = "비밀번호",
                 example = "abc12345"
@@ -25,7 +25,7 @@ public record SignupRequest(
         String password,
 
         @NotBlank(message = "닉네임은 필수입니다.")
-        @Size(min = 3, max = 10, message = "닉네임은 3~10 글자여야 합니다.")
+        @Size(min = 2, max = 10, message = "닉네임은 2~10 글자여야 합니다.")
         String nickname
 ) {
 }
