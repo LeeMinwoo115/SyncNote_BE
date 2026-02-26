@@ -33,7 +33,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/health", "/actuator/health", "/github/webhook").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
