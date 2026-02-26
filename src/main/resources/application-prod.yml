@@ -29,7 +29,7 @@ spring:
 cookie:
   secure: true
   same-site: None
-  domain: ""
+  domain: ${COOKIE_DOMAIN:.mmm3.click}
 
 logging:
   level:

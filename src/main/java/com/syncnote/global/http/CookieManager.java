@@ -83,7 +83,7 @@ public class CookieManager {
         set(request, response, name, "", 0);
     }
 
-    private boolean iaHttpsRequest(HttpServletRequest request) {
+    private boolean isHttpsRequest(HttpServletRequest request) {
         String proto = request.getHeader("X-Forwarded-Proto");
 
         if (proto != null && !proto.isBlank()) {
