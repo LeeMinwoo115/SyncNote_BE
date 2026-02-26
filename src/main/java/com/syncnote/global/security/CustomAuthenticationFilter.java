@@ -40,7 +40,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private static final Set<String> AUTH_EXACT_WHITELIST = Set.of(
             "/api/v1/auth/login",
             "/api/v1/auth/signup",
-            "/api/v1/auth/logout"
+            "/api/v1/auth/logout",
+            "/api/v1/test"
     );
 
     private final JwtProvider jwtProvider;
