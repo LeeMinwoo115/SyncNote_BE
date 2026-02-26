@@ -19,6 +19,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/health", "/actuator/health").permitAll()
                         .anyRequest().permitAll()
                 );
 
