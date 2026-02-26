@@ -10,6 +10,7 @@ public class HealthController {
 
     @GetMapping("/health")
     public String health() {
+        log.info("Server Health Check");
         return "ok";
     }
 }
