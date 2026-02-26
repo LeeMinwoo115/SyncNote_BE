@@ -1,5 +1,6 @@
 package com.syncnote.global.http;
 
+import com.syncnote.global.properties.CookieProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 public class CookieManager {
     public static final String ACCESS_TOKEN_COOKIE = "accessToken";
     public static final String REFRESH_TOKEN_COOKIE = "refreshToken";
+
+    private final CookieProperties cookieProperties;
 
     public void setAccessToken(
             HttpServletRequest request,
@@ -56,14 +59,17 @@ public class CookieManager {
         boolean delete = cookieValue.isBlank();
         long maxAge = delete ? 0 : Math.max(maxAgeSeconds, 0);
 
+        String sameSite = cookieProperties.getSameSite();
+        boolean secure = cookieProperties.isSecure();
+
         ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(name, cookieValue)
                 .httpOnly(true)
                 .path("/")
-                .sameSite("Lax") // TODO: need to refactor
-                .secure(false) // TODO: need to refactor
+                .sameSite(sameSite)
+                .secure(secure)
                 .maxAge(maxAge);
 
-        String domain = ""; // TODO: need to refactor
+        String domain = cookieProperties.getDomain();
 
         if (domain != null && !domain.isBlank()) {
             builder.domain(domain);

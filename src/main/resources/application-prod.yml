@@ -18,6 +18,11 @@ spring:
       ddl-auto: none
     show-sql: false
 
+cookie:
+  secure: true
+  same-site: None
+  domain: ""
+
 logging:
   level:
     root: INFO
