@@ -52,11 +52,13 @@ public class RedisConfig {
                 }
             }
 
-            LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-                    .useSsl()
-                    .build();
+            boolean ssl = "rediss".equalsIgnoreCase(uri.getScheme());
 
-            return new LettuceConnectionFactory(config, clientConfiguration);
+            LettuceClientConfiguration clientConfig = ssl
+                    ? LettuceClientConfiguration.builder().useSsl().build()
+                    : LettuceClientConfiguration.builder().build();
+
+            return new LettuceConnectionFactory(config, clientConfig);
         }
 
         RedisStandaloneConfiguration config =
