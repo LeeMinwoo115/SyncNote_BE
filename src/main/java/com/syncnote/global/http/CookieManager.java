@@ -69,7 +69,7 @@ public class CookieManager {
                 .secure(secure)
                 .maxAge(maxAge);
 
-        String domain = cookieProperties.getDomain();
+        String domain = resolveCookieDomain(request);
 
         if (domain != null && !domain.isBlank()) {
             builder.domain(domain);
@@ -81,6 +81,23 @@ public class CookieManager {
 
     public void delete(HttpServletRequest request, HttpServletResponse response, String name) {
         set(request, response, name, "", 0);
+    }
+
+    private String resolveCookieDomain(HttpServletRequest request) {
+        String origin = request.getHeader("Origin");
+        if (origin == null || origin.isBlank()) {
+            return null;
+        }
+
+        if (origin.startsWith("http://localhost") || origin.startsWith("https://localhost")) {
+            return null;
+        }
+
+        if (origin.endsWith(".mmm3.click") || origin.contains("mmm3.click")) {
+            return ".mmm3.click";
+        }
+
+        return null;
     }
 
     private boolean isHttpsRequest(HttpServletRequest request) {
