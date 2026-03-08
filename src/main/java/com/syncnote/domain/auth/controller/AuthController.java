@@ -7,6 +7,7 @@ import com.syncnote.domain.auth.service.AuthService;
 import com.syncnote.global.enums.UserRole;
 import com.syncnote.global.http.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Auth API", description = "사용자 회원가입, 로그인")
 public class AuthController {
 
     private final AuthService authService;
