@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/rooms")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "User API", description = "사용자 정보 조회 및 수정, 회원 탈퇴 API")
+@Tag(name = "Room API", description = "방 생성,조회,삭제 API")
 public class RoomController {
 
     private final HttpRequestContext httpRequestContext;
