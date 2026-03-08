@@ -39,7 +39,7 @@ public class RoomService {
         Room room = Room.builder()
                 .owner(user)
                 .title(request.title())
-                .description(request.description())
+                .description(null) // TODO: null 값 나중에 수정
                 .visibility(request.visibility())
                 .inviteCode(generateInviteCode())
                 .build();
