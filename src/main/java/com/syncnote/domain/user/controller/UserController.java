@@ -3,9 +3,10 @@ package com.syncnote.domain.user.controller;
 import com.syncnote.domain.user.dto.response.UserProfileResponse;
 import com.syncnote.domain.user.service.UserService;
 import com.syncnote.global.http.ApiResponse;
-import com.syncnote.global.http.HttpRequestContext;
+import com.syncnote.global.security.SecurityUser;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final HttpRequestContext httpRequestContext;
 
     @GetMapping("/profile")
-    public ApiResponse<UserProfileResponse> getProfile() {
-        long userId = httpRequestContext.getUserId();
+    public ApiResponse<UserProfileResponse> getProfile(@AuthenticationPrincipal SecurityUser user) {
+        long userId = user.getId();
         UserProfileResponse response = userService.getUser(userId);
         return ApiResponse.ok(String.format("%s 사용자 조회 성공", userId), response);
     }

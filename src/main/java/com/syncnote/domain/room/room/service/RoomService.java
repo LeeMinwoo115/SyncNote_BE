@@ -126,6 +126,24 @@ public class RoomService {
         );
     }
 
+    @Transactional
+    public void joinRoom(long userId, String inviteCode) {
+        Room room = roomRepository.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new ErrorException(RoomErrorCode.NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(UserErrorCode.NOT_FOUND));
+
+        RoomToUser roomToUser = RoomToUser.builder()
+                                .user(user)
+                                .room(room)
+                                .role(RoomRole.EDITOR)
+                                .joinedAt(LocalDateTime.now())
+                                .build();
+
+        roomToUserRepository.save(roomToUser);
+    }
+
     private String generateInviteCode() {
         String code;
 
