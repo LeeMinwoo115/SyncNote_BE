@@ -1,7 +1,6 @@
 package com.syncnote.domain.auth.service;
 
 import com.syncnote.domain.auth.dto.JwtDto;
-import com.syncnote.domain.auth.dto.RefreshTokenCache;
 import com.syncnote.domain.auth.dto.request.LoginRequest;
 import com.syncnote.domain.auth.dto.request.SignupRequest;
 import com.syncnote.domain.auth.dto.response.AuthResponse;
@@ -67,10 +66,15 @@ public class AuthService {
             throw new ErrorException(AuthErrorCode.LOGIN_FAILED);
         }
 
-        RefreshTokenCache cache = refreshTokenRedisRepository.find(user.getId())
-                .orElseThrow(() -> new ErrorException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
+        long nextVersion = refreshTokenRedisRepository.find(user.getId())
+                .map(cache -> cache.getTokenVersion() + 1)
+                .orElse(1L);
 
-        JwtDto tokens = authTokenService.issueTokens(user, UUID.randomUUID().toString(), cache.getTokenVersion() + 1);
+        JwtDto tokens = authTokenService.issueTokens(
+                user,
+                UUID.randomUUID().toString(),
+                nextVersion
+        );
 
         httpRequestContext.setAccessTokenCookie(tokens.accessToken());
         httpRequestContext.setRefreshTokenCookie(tokens.refreshToken());

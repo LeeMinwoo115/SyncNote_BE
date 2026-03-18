@@ -16,4 +16,15 @@ public interface RoomToUserRepository extends JpaRepository<RoomToUser, Long> {
         order by rtu.joinedAt desc
     """)
     List<RoomToUser> findAllByUserIdWithRoom(@Param("userId") Long userId);
+
+    boolean existsByRoomIdAndUserId(long roomId, long userId);
+
+    @Query("""
+        select rtu
+        from RoomToUser rtu
+        join fetch rtu.user u
+        where rtu.room.id = :roomId
+        order by rtu.joinedAt asc
+        """)
+    List<RoomToUser> findAllByRoomIdWithUser(@Param("roomId") long roomId);
 }

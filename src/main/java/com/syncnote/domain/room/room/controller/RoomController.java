@@ -2,6 +2,7 @@ package com.syncnote.domain.room.room.controller;
 
 import com.syncnote.domain.room.room.dto.request.CreateRoomRequest;
 import com.syncnote.domain.room.room.dto.response.CreateRoomResponse;
+import com.syncnote.domain.room.room.dto.response.GetRoomResponse;
 import com.syncnote.domain.room.room.dto.response.GetRoomSummary;
 import com.syncnote.domain.room.room.service.RoomService;
 import com.syncnote.global.http.ApiResponse;
@@ -38,5 +39,13 @@ public class RoomController {
         long userId = httpRequestContext.getUserId();
         List<GetRoomSummary> response = roomService.getRooms(userId);
         return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/{roomId}")
+    @Operation(summary = "참여 방 상세 조회")
+    public ApiResponse<GetRoomResponse> getRoom(@PathVariable("roomId") Long roomId) {
+        long userId = httpRequestContext.getUserId();
+        GetRoomResponse response = roomService.getRoom(userId, roomId);
+        return ApiResponse.ok("방 상세 조회를 성공했습니다.", response);
     }
 }

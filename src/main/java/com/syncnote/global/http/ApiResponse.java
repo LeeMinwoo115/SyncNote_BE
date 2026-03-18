@@ -13,7 +13,7 @@ public record ApiResponse<T>(
     }
 
     public static <T> ApiResponse<T> ok(T data) {
-        return ok("유저 정보를 불러왔습니다.", data);
+        return ok("데이터 조회 성공.", data);
     }
 
     public static <T> ApiResponse<T> created(String message, T data) {

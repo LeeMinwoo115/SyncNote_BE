@@ -1,10 +1,14 @@
 package com.syncnote.domain.room.room.service;
 
+import com.syncnote.domain.room.board.dto.response.BoardDetail;
 import com.syncnote.domain.room.board.service.BoardService;
+import com.syncnote.domain.room.note.dto.response.NoteDetail;
 import com.syncnote.domain.room.note.service.NoteService;
 import com.syncnote.domain.room.room.dto.request.CreateRoomRequest;
 import com.syncnote.domain.room.room.dto.response.CreateRoomResponse;
+import com.syncnote.domain.room.room.dto.response.GetRoomResponse;
 import com.syncnote.domain.room.room.dto.response.GetRoomSummary;
+import com.syncnote.domain.room.room.dto.response.RoomParticipantResponse;
 import com.syncnote.domain.room.room.entity.Room;
 import com.syncnote.domain.room.room.entity.RoomToUser;
 import com.syncnote.domain.room.room.repository.RoomRepository;
@@ -12,6 +16,7 @@ import com.syncnote.domain.room.room.repository.RoomToUserRepository;
 import com.syncnote.domain.room.room.type.RoomRole;
 import com.syncnote.domain.user.entity.User;
 import com.syncnote.domain.user.repository.UserRepository;
+import com.syncnote.global.error.code.RoomErrorCode;
 import com.syncnote.global.error.code.UserErrorCode;
 import com.syncnote.global.error.exception.ErrorException;
 import com.syncnote.global.utils.InviteCodeGenerator;
@@ -81,6 +86,44 @@ public class RoomService {
                         room.getOwner().getId()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public GetRoomResponse getRoom(long userId, long roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(
+                () -> new ErrorException(RoomErrorCode.NOT_FOUND)
+        );
+
+        if(!roomToUserRepository.existsByRoomIdAndUserId(roomId, userId)) {
+            throw new ErrorException(RoomErrorCode.FORBIDDEN);
+        }
+
+        NoteDetail noteDetail = noteService.getNote(room);
+        BoardDetail boardDetail = boardService.getBoard(room);
+
+        List<RoomParticipantResponse> participants = roomToUserRepository.findAllByRoomIdWithUser(roomId)
+                .stream()
+                .map(roomToUser -> new RoomParticipantResponse(
+                        roomToUser.getUser().getId(),
+                        roomToUser.getUser().getNickname(),
+                        roomToUser.getRole(),
+                        roomToUser.getJoinedAt(),
+                        roomToUser.getLastVisitedAt()
+                ))
+                .toList();
+
+        return new GetRoomResponse(
+                room.getId(),
+                room.getTitle(),
+                room.getDescription(),
+                room.getVisibility(),
+                room.getInviteCode(),
+                room.getOwner().getId(),
+                room.getUpdatedAt(),
+                participants,
+                noteDetail,
+                boardDetail
+        );
     }
 
     private String generateInviteCode() {
