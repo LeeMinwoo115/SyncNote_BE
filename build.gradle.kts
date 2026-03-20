@@ -58,7 +58,7 @@ dependencies {
 
 }
 
-test {
+tasks.test {
     useJUnitPlatform()
-    failOnNoDiscoveredTests = false // TODO: test 코드 추가 후 제거
+    failOnNoDiscoveredTests = false
 }
