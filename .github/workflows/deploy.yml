@@ -25,6 +25,26 @@ jobs:
       - name: Grant execute permission
         run: chmod +x ./gradlew
 
+      - name: Create application-test.yml
+        run: |
+          mkdir -p src/main/resources
+          cat > src/main/resources/application-test.yml <<EOF
+          spring:
+            datasource:
+              url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+              username: sa
+              password:
+              driver-class-name: org.h2.Driver
+            jpa:
+              hibernate:
+                ddl-auto: create-drop
+            flyway:
+              enabled: false
+            autoconfigure:
+              exclude:
+                - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+          EOF
+
       - name: Run tests
         run: ./gradlew test
 
