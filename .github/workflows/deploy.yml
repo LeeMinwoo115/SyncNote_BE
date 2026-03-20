@@ -35,24 +35,24 @@ jobs:
               username: sa
               password:
               driver-class-name: org.h2.Driver
-
+          
             jpa:
               hibernate:
                 ddl-auto: create-drop
-
+          
             flyway:
               enabled: false
-
+          
             autoconfigure:
               exclude:
                 - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-
+          
           custom:
             jwt:
               secret: test-secret-key-test-secret-key-test-secret-key
               access-token-duration: 300
               refresh-token-duration: 604800
-
+          
             cors:
               allowed-origins:
                 - http://localhost:3000
@@ -68,12 +68,12 @@ jobs:
                 - Content-Type
                 - Accept
                 - Origin
-
+          
           cookie:
             secure: false
             same-site: Lax
             domain: ""
-
+          
           security:
             password:
               bcrypt-strength: 4

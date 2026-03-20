@@ -11,7 +11,7 @@ public class PasswordEncoderConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(
-            @Value("${security.password.bcrypt-strength}") int strength
+            @Value("${security.password.bcrypt-strength:4}") int strength
     ) {
         return new BCryptPasswordEncoder(strength);
     }
