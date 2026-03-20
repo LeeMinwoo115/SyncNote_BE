@@ -57,3 +57,8 @@ dependencies {
     testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
 
 }
+
+test {
+    useJUnitPlatform()
+    failOnNoDiscoveredTests = false // TODO: test 코드 추가 후 제거
+}
