@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  app:
+    image: ghcr.io/leeminwoo115/syncnote:latest
+    container_name: syncnote_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    networks:
+      - common
+
+networks:
+  common:
+    external: true
