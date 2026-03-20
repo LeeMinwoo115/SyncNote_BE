@@ -105,10 +105,48 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            mkdir -p /dockerProjects/app
+            mkdir -p /dockerProjects/npm/data
+            mkdir -p /dockerProjects/npm/letsencrypt
+            
+            docker network inspect common >/dev/null 2>&1 || docker network create common
+            
+            cat > /dockerProjects/app/docker-compose.yml <<'EOF'
+            version: "3.9"
+            
+            services:
+              app:
+                image: ghcr.io/leeminwoo115/syncnote:latest
+                container_name: syncnote_app
+                restart: unless-stopped
+                env_file:
+                  - .env
+                ports:
+                  - "8080:8080"
+                networks:
+                  - common
+            
+            networks:
+              common:
+                external: true
+            EOF
+            
+            cat > /dockerProjects/app/.env <<'EOF'
+            SPRING_PROFILES_ACTIVE=prod
+            PORT=8080
+            DB_URL=${{ secrets.DB_URL }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            REDIS_URL=${{ secrets.REDIS_URL }}
+            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            COOKIE_DOMAIN=.mmm3.click
+            EOF
+            
             cd /dockerProjects/app
-            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GHCR_PAT }}
-            docker pull ghcr.io/${{ github.repository_owner }}/syncnote:latest
-            docker compose down
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u leeminwoo115 --password-stdin
+            docker pull ghcr.io/leeminwoo115/syncnote:latest
+            docker compose down || true
             docker compose up -d
-            sleep 10
+            sleep 15
             curl -f http://localhost:8080/actuator/health
