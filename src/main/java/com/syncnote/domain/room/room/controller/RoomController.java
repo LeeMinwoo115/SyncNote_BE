@@ -5,6 +5,7 @@ import com.syncnote.domain.room.room.dto.request.JoinRoomRequest;
 import com.syncnote.domain.room.room.dto.response.CreateRoomResponse;
 import com.syncnote.domain.room.room.dto.response.GetRoomResponse;
 import com.syncnote.domain.room.room.dto.response.GetRoomSummary;
+import com.syncnote.domain.room.room.dto.response.JoinRoomResponseDto;
 import com.syncnote.domain.room.room.service.RoomService;
 import com.syncnote.global.http.ApiResponse;
 import com.syncnote.global.security.SecurityUser;
@@ -55,11 +56,11 @@ public class RoomController {
 
     @PostMapping("/join")
     @Operation(summary = "초대코드로 방 참여")
-    public ApiResponse<Void> joinRoom(
+    public ApiResponse<JoinRoomResponseDto> joinRoom(
             @AuthenticationPrincipal SecurityUser user,
             @Validated @RequestBody JoinRoomRequest request
     ) {
-        roomService.joinRoom(user.getId(), request.inviteCode());
-        return ApiResponse.noContent("방 참여에 성공했습니다.");
+        JoinRoomResponseDto response = roomService.joinRoom(user.getId(), request.inviteCode());
+        return ApiResponse.ok("방 참여에 성공했습니다.", response);
     }
 }

@@ -6,10 +6,7 @@ import com.syncnote.domain.room.note.dto.response.NoteDetail;
 import com.syncnote.domain.room.note.service.NoteService;
 import com.syncnote.domain.room.room.dto.event.RoomEventDto;
 import com.syncnote.domain.room.room.dto.request.CreateRoomRequest;
-import com.syncnote.domain.room.room.dto.response.CreateRoomResponse;
-import com.syncnote.domain.room.room.dto.response.GetRoomResponse;
-import com.syncnote.domain.room.room.dto.response.GetRoomSummary;
-import com.syncnote.domain.room.room.dto.response.RoomParticipantResponse;
+import com.syncnote.domain.room.room.dto.response.*;
 import com.syncnote.domain.room.room.entity.Room;
 import com.syncnote.domain.room.room.entity.RoomToUser;
 import com.syncnote.domain.room.room.repository.RoomRepository;
@@ -131,7 +128,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void joinRoom(long userId, String inviteCode) {
+    public JoinRoomResponseDto joinRoom(long userId, String inviteCode) {
         Room room = roomRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new ErrorException(RoomErrorCode.NOT_FOUND));
 
@@ -148,6 +145,8 @@ public class RoomService {
         roomToUserRepository.save(roomToUser);
 
         eventPublisher.publishEvent(new RoomEventDto(EventEnums.ROOM));
+
+        return new JoinRoomResponseDto(room.getId());
     }
 
     private String generateInviteCode() {
