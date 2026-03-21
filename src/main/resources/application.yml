@@ -40,8 +40,8 @@ spring:
 logging:
   level:
     root: INFO
-    com.back: DEBUG
-    com.back.global.security: DEBUG  # 보안 필터 로그 상세 출력
+    com.syncnote: DEBUG
+    com.syncnote.global.security: DEBUG  # 보안 필터 로그 상세 출력
     org.hibernate.orm.jdbc.bind: OFF
     org.hibernate.orm.jdbc.extract: OFF
     org.springframework.transaction.interceptor: INFO

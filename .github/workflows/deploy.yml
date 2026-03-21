@@ -112,8 +112,6 @@ jobs:
             sudo docker network inspect common >/dev/null 2>&1 || sudo docker network create common
 
             sudo tee /dockerProjects/app/docker-compose.yml > /dev/null <<'EOF'
-            version: "3.9"
-
             services:
               app:
                 image: ghcr.io/leeminwoo115/syncnote:latest
@@ -152,6 +150,16 @@ jobs:
             cd /dockerProjects/app
             sudo docker compose down || true
             sudo docker compose up -d
-
-            sleep 15
-            curl -f http://localhost:8080/actuator/health
+            
+            for i in {1..30}; do
+              if curl -fsS http://localhost:8080/actuator/health; then
+                echo "Health check passed"
+                exit 0
+              fi
+              echo "Waiting for app... ($i/30)"
+              sleep 5
+            done
+            
+            echo "Health check failed"
+            sudo docker logs --tail 200 syncnote_app
+            exit 1
