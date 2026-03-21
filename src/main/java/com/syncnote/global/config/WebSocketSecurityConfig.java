@@ -14,6 +14,8 @@ public class WebSocketSecurityConfig {
     public AuthorizationManager<Message<?>> messageAuthorizationManager(
             MessageMatcherDelegatingAuthorizationManager.Builder messages
     ) {
+        // TODO: 웹소켓 보안 설정 시 다시 확인
+        /*
         messages
                 // CONNECT, DISCONNECT 등 destination 없는 메시지
                 .nullDestMatcher().authenticated()
@@ -34,6 +36,13 @@ public class WebSocketSecurityConfig {
                 ).denyAll()
 
                 .anyMessage().denyAll();
+         */
+
+        messages
+                .nullDestMatcher().permitAll()
+                .simpDestMatchers("/app/**").permitAll()
+                .simpSubscribeDestMatchers("/topic/**", "/user/**").permitAll()
+                .anyMessage().permitAll();
 
         return messages.build();
     }
