@@ -5,8 +5,9 @@ spring:
 
   data:
     redis:
-      url: ${REDIS_URL}
-      password: ${REDIS_PASSWORD:}
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
 
   datasource:
     url: ${DB_URL}

@@ -137,8 +137,11 @@ jobs:
             DB_URL=${{ secrets.DB_URL }}
             DB_USERNAME=${{ secrets.DB_USERNAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            REDIS_URL=redis://redis_1:6379
-            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            
+            SPRING_DATA_REDIS_HOST=redis_1
+            SPRING_DATA_REDIS_PORT=6379
+            SPRING_DATA_REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             COOKIE_DOMAIN=.mmm3.click
             EOF
