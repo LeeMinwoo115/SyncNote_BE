@@ -57,6 +57,8 @@ dependencies {
     testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework.security:spring-security-messaging")
 }
 
 tasks.test {

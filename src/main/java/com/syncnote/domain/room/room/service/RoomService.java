@@ -4,6 +4,7 @@ import com.syncnote.domain.room.board.dto.response.BoardDetail;
 import com.syncnote.domain.room.board.service.BoardService;
 import com.syncnote.domain.room.note.dto.response.NoteDetail;
 import com.syncnote.domain.room.note.service.NoteService;
+import com.syncnote.domain.room.room.dto.event.RoomEventDto;
 import com.syncnote.domain.room.room.dto.request.CreateRoomRequest;
 import com.syncnote.domain.room.room.dto.response.CreateRoomResponse;
 import com.syncnote.domain.room.room.dto.response.GetRoomResponse;
@@ -16,9 +17,11 @@ import com.syncnote.domain.room.room.repository.RoomToUserRepository;
 import com.syncnote.domain.room.room.type.RoomRole;
 import com.syncnote.domain.user.entity.User;
 import com.syncnote.domain.user.repository.UserRepository;
+import com.syncnote.global.enums.EventEnums;
 import com.syncnote.global.error.code.RoomErrorCode;
 import com.syncnote.global.error.code.UserErrorCode;
 import com.syncnote.global.error.exception.ErrorException;
+import com.syncnote.global.socket.event.EventPublisher;
 import com.syncnote.global.utils.InviteCodeGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class RoomService {
     private final BoardService boardService;
     private final NoteService noteService;
     private final RoomToUserRepository roomToUserRepository;
+    private final EventPublisher eventPublisher;
 
     @Transactional
     public CreateRoomResponse createRoom(long userId, CreateRoomRequest request) {
@@ -142,6 +146,8 @@ public class RoomService {
                                 .build();
 
         roomToUserRepository.save(roomToUser);
+
+        eventPublisher.publishEvent(new RoomEventDto(EventEnums.ROOM));
     }
 
     private String generateInviteCode() {
