@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,6 +68,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             handleErrorException(request, response, e);
         } catch (Exception e) {
             log.error("Auth Filter Error: ", e);
+            handleUnexpectedException(response);
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -151,20 +153,24 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (StringUtils.isBlank(accessToken)) {
-            throw new ErrorException(AuthErrorCode.UNAUTHORIZED);
-        }
-
-        if (!jwtProvider.isExpired(accessToken)) {
+        if (StringUtils.isNoneBlank(accessToken) && !jwtProvider.isExpired(accessToken)) {
             return accessToken;
         }
 
-        log.info("Expired Access Token → Try to Issue new Access Token, expired access token: {}",
-                accessToken);
         String refreshTokenStr = resolveCookie(request, "refreshToken");
 
-        if (StringUtils.isBlank(refreshTokenStr) || jwtProvider.isExpired(refreshTokenStr)) {
+        if (StringUtils.isBlank(refreshTokenStr)) {
+            throw new ErrorException(AuthErrorCode.UNAUTHORIZED);
+        }
+
+        if (jwtProvider.isExpired(refreshTokenStr)) {
             throw new ErrorException(AuthErrorCode.TOKEN_EXPIRED);
+        }
+
+        if (StringUtils.isBlank(accessToken)) {
+            log.info("Access token missing → try reissue with refresh token");
+        } else {
+            log.info("Access token expired → try reissue with refresh token");
         }
 
         JwtDto newTokens = authTokenService.updateTokens(refreshTokenStr);
@@ -192,6 +198,21 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         log.error("CustomAuthenticationFilter: ", error);
         writeError(response, error.getErrorCode());
+    }
+
+    private void handleUnexpectedException(HttpServletResponse response) throws IOException {
+        if (response.isCommitted()) {
+            return;
+        }
+
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.setContentType("application/json; charset=UTF-8");
+
+        ApiResponse<?> body = ApiResponse.fail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "인증 처리 중 서버 오류가 발생했습니다."
+        );
+        response.getWriter().write(objectMapper.writeValueAsString(body));
     }
 
     private void writeError(HttpServletResponse response, ErrorCode code) throws IOException {
