@@ -56,6 +56,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.github.codemonstur:embedded-redis:1.4.3")
 
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 tasks.test {
