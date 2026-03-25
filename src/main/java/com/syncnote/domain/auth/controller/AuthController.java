@@ -40,4 +40,11 @@ public class AuthController {
         AuthResponse response = authService.login(request);
         return ApiResponse.created("로그인 성공", response);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "사용자 로그아웃")
+    public ApiResponse<Void> logout() {
+        authService.logout();
+        return ApiResponse.noContent("로그아웃 되었습니다.");
+    }
 }

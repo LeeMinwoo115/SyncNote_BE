@@ -16,6 +16,7 @@ import com.syncnote.global.http.HttpRequestContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,14 @@ public class AuthService {
         httpRequestContext.setRefreshTokenCookie(tokens.refreshToken());
 
         return buildAuthResponse(user, tokens);
+    }
+
+    @Transactional
+    public void logout() {
+        String refreshTokenStr = httpRequestContext.getCookieValue("refreshToken", null);
+        if (StringUtils.isBlank(refreshTokenStr)) {
+            httpRequestContext.deleteAuthCookies();
+        }
     }
 
     private AuthResponse buildAuthResponse(User user, JwtDto tokens) {
