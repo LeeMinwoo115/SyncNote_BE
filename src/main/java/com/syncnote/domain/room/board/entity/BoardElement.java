@@ -1,6 +1,6 @@
 package com.syncnote.domain.room.board.entity;
 
-import com.syncnote.domain.room.chat.ElementType;
+import com.syncnote.global.enums.ElementType;
 import com.syncnote.domain.user.entity.User;
 import com.syncnote.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;

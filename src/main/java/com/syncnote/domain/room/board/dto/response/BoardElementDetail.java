@@ -1,6 +1,6 @@
 package com.syncnote.domain.room.board.dto.response;
 
-import com.syncnote.domain.room.chat.ElementType;
+import com.syncnote.global.enums.ElementType;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.syncnote.domain.room.chat;
+package com.syncnote.global.enums;
 
 public enum ElementType {
     PEN,
