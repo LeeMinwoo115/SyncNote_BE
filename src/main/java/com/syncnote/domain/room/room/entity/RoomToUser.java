@@ -1,5 +1,6 @@
 package com.syncnote.domain.room.room.entity;
 
+import com.syncnote.domain.room.chat.entity.ChatMessage;
 import com.syncnote.domain.room.room.type.RoomRole;
 import com.syncnote.domain.user.entity.User;
 import com.syncnote.global.jpa.entity.BaseEntity;
@@ -40,8 +41,9 @@ public class RoomToUser extends BaseEntity {
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
-    @Column(name = "last_read_chat_id")
-    private String lastReadChatId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_read_chat_id")
+    private ChatMessage lastReadChat;
 
     @Column(name = "last_visited_at")
     private LocalDateTime lastVisitedAt;
@@ -57,5 +59,14 @@ public class RoomToUser extends BaseEntity {
         this.room = room;
         this.role = role;
         this.joinedAt = joinedAt;
+    }
+
+    public void updateLastReadChat(ChatMessage lastReadChat) {
+        this.lastReadChat = lastReadChat;
+        this.lastVisitedAt = LocalDateTime.now();
+    }
+
+    public void updateLastVisitedAt() {
+        this.lastVisitedAt = LocalDateTime.now();
     }
 }
