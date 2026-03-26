@@ -101,4 +101,18 @@ public class AuthTokenService {
 
         refreshTokenRedisRepository.save(userId, cache, Duration.ofSeconds(refreshValiditySeconds));
     }
+
+    public void invalidateRefreshToken(String refreshToken) {
+        JwtClaims claims = jwtProvider.payloadOrNull(refreshToken);
+
+        if (claims == null) {
+            return;
+        }
+
+        if (!"refresh".equals(claims.tokenType())) {
+            return;
+        }
+
+        refreshTokenRedisRepository.delete(claims.userId());
+    }
 }

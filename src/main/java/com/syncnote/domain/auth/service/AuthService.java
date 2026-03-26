@@ -86,9 +86,12 @@ public class AuthService {
     @Transactional
     public void logout() {
         String refreshTokenStr = httpRequestContext.getCookieValue("refreshToken", null);
-        if (StringUtils.isBlank(refreshTokenStr)) {
-            httpRequestContext.deleteAuthCookies();
+
+        if (StringUtils.isNotBlank(refreshTokenStr)) {
+            authTokenService.invalidateRefreshToken(refreshTokenStr);
         }
+
+        httpRequestContext.deleteAuthCookies();
     }
 
     private AuthResponse buildAuthResponse(User user, JwtDto tokens) {
