@@ -4,7 +4,7 @@ import com.syncnote.domain.room.board.dto.response.BoardDetail;
 import com.syncnote.domain.room.board.service.BoardService;
 import com.syncnote.domain.room.note.dto.response.NoteDetail;
 import com.syncnote.domain.room.note.service.NoteService;
-import com.syncnote.domain.room.room.dto.event.RoomEventDto;
+import com.syncnote.domain.room.room.dto.event.RoomParticipantEventDto;
 import com.syncnote.domain.room.room.dto.request.CreateRoomRequest;
 import com.syncnote.domain.room.room.dto.response.*;
 import com.syncnote.domain.room.room.entity.Room;
@@ -14,7 +14,6 @@ import com.syncnote.domain.room.room.repository.RoomToUserRepository;
 import com.syncnote.domain.room.room.type.RoomRole;
 import com.syncnote.domain.user.entity.User;
 import com.syncnote.domain.user.repository.UserRepository;
-import com.syncnote.global.enums.EventEnums;
 import com.syncnote.global.error.code.RoomErrorCode;
 import com.syncnote.global.error.code.UserErrorCode;
 import com.syncnote.global.error.exception.ErrorException;
@@ -22,6 +21,7 @@ import com.syncnote.global.socket.event.EventPublisher;
 import com.syncnote.global.utils.InviteCodeGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -135,6 +135,10 @@ public class RoomService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ErrorException(UserErrorCode.NOT_FOUND));
 
+        if (roomToUserRepository.existsByRoomIdAndUserId(room.getId(), userId)) {
+            throw new ErrorException(RoomErrorCode.ALREADY_JOINED);
+        }
+
         RoomToUser roomToUser = RoomToUser.builder()
                                 .user(user)
                                 .room(room)
@@ -142,9 +146,17 @@ public class RoomService {
                                 .joinedAt(LocalDateTime.now())
                                 .build();
 
-        roomToUserRepository.save(roomToUser);
+        try {
+            roomToUserRepository.save(roomToUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new ErrorException((RoomErrorCode.ALREADY_JOINED));
+        }
 
-        eventPublisher.publishEvent(new RoomEventDto(EventEnums.ROOM));
+        eventPublisher.publishEvent(RoomParticipantEventDto.joined(
+                room.getId(),
+                user.getId(),
+                user.getNickname()
+        ));
 
         return new JoinRoomResponseDto(room.getId());
     }

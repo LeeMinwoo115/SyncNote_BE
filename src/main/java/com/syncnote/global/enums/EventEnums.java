@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EventEnums {
-    ROOM("ROOM");
+    JOIN("JOIN");
 
     private final String event;
 }

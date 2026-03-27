@@ -35,7 +35,9 @@ public class ChatService {
     private final RoomToUserRepository roomToUserRepository;
 
     @Transactional
-    public ChatMessageResponse sendMessage(long userId, SendChatMessageRequest request) {
+    public ChatMessageResponse sendMessage(SendChatMessageRequest request) {
+        long userId = request.userId();
+
         Room room = roomRepository.findById(request.roomId())
                 .orElseThrow(() -> new ErrorException(RoomErrorCode.NOT_FOUND));
 
@@ -124,7 +126,9 @@ public class ChatService {
     }
 
     @Transactional
-    public void updateLastRead(long userId, ReadChatMessageRequest request) {
+    public void updateLastRead(ReadChatMessageRequest request) {
+        long userId = request.userId();
+
         RoomToUser roomToUser = roomToUserRepository.findByRoomIdAndUserId(request.roomId(), userId)
                 .orElseThrow(() -> new ErrorException(RoomErrorCode.FORBIDDEN));
 

@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum RoomErrorCode implements ErrorCode{
     NOT_FOUND(HttpStatus.NOT_FOUND, "방을 찾을 수 없습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다."),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청값을 다시 확인해주세요.");
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청값을 다시 확인해주세요."),
+    ALREADY_JOINED(HttpStatus.BAD_REQUEST, "이미 참여 중입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

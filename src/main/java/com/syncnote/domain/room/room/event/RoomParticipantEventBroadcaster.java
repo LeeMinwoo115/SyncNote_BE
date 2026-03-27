@@ -1,6 +1,6 @@
 package com.syncnote.domain.room.room.event;
 
-import com.syncnote.domain.room.room.dto.event.RoomEventDto;
+import com.syncnote.domain.room.room.dto.event.RoomParticipantEventDto;
 import com.syncnote.global.socket.event.Broadcaster;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,12 +10,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class RoomEventBroadcaster implements Broadcaster<RoomEventDto> {
+public class RoomParticipantEventBroadcaster implements Broadcaster<RoomParticipantEventDto> {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onCreated(RoomEventDto event) {
-        messagingTemplate.convertAndSend("/topic/room/rooms", event);
+    public void onCreated(RoomParticipantEventDto event) {
+        messagingTemplate.convertAndSend("/topic/rooms/" + event.roomId() + "/participants", event);
     }
 }
