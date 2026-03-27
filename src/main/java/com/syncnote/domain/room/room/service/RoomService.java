@@ -76,17 +76,7 @@ public class RoomService {
 
     @Transactional
     public List<GetRoomSummary> getRooms(long userId) {
-        return roomToUserRepository.findAllByUserIdWithRoom(userId).stream()
-                .map(RoomToUser::getRoom)
-                .map(room -> new GetRoomSummary(
-                        room.getId(),
-                        room.getTitle(),
-                        room.getDescription(),
-                        room.getVisibility(),
-                        room.getInviteCode(),
-                        room.getOwner().getId()
-                ))
-                .toList();
+        return roomToUserRepository.findRoomSummariesByUserId(userId);
     }
 
     @Transactional

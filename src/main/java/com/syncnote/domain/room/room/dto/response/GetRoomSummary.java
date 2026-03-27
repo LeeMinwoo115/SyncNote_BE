@@ -8,6 +8,7 @@ public record GetRoomSummary(
         String description,
         RoomVisibility visibility,
         String inviteCode,
+        Long participantCount,
         Long ownerId
 ) {
 }
