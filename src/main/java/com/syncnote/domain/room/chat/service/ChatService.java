@@ -4,6 +4,7 @@ import com.syncnote.domain.room.chat.dto.request.ReadChatMessageRequest;
 import com.syncnote.domain.room.chat.dto.request.SendChatMessageRequest;
 import com.syncnote.domain.room.chat.dto.response.ChatMessageResponse;
 import com.syncnote.domain.room.chat.dto.response.GetRoomMessagesResponse;
+import com.syncnote.domain.room.chat.dto.response.GetUnreadChatCountResponse;
 import com.syncnote.domain.room.chat.entity.ChatMessage;
 import com.syncnote.domain.room.chat.repository.ChatMessageRepository;
 import com.syncnote.domain.room.room.entity.Room;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -140,5 +142,27 @@ public class ChatService {
         }
 
         roomToUser.updateLastReadChat(chatMessage);
+    }
+
+    @Transactional
+    public GetUnreadChatCountResponse getUnreadCount(long userId, long roomId) {
+        RoomToUser roomToUser = roomToUserRepository.findByRoomIdAndUserId(roomId, userId)
+                .orElseThrow(() -> new ErrorException(RoomErrorCode.FORBIDDEN));
+
+        ChatMessage lastReadMessage = roomToUser.getLastReadChat();
+
+        long unreadCount = 0;
+
+        if (lastReadMessage == null) {
+            unreadCount = chatMessageRepository.countByRoomId(roomId);
+        } else {
+            unreadCount = chatMessageRepository.countByRoomIdAndIdGreaterThan(roomId, lastReadMessage.getId());
+        }
+
+        return new GetUnreadChatCountResponse(
+                Optional.ofNullable(lastReadMessage)
+                        .map(ChatMessage::getId),
+                unreadCount
+        );
     }
 }

@@ -28,4 +28,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     List<ChatMessage> findMessagesBeforeCursor(Long roomId, Long cursor, Pageable pageable);
 
     long countByRoomIdAndIdGreaterThan(Long roomId, Long lastReadMessageId);
+
+    long countByRoomId(Long roomId);
 }

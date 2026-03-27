@@ -1,6 +1,7 @@
 package com.syncnote.domain.room.chat.controller;
 
 import com.syncnote.domain.room.chat.dto.response.GetRoomMessagesResponse;
+import com.syncnote.domain.room.chat.dto.response.GetUnreadChatCountResponse;
 import com.syncnote.domain.room.chat.service.ChatService;
 import com.syncnote.global.http.ApiResponse;
 import com.syncnote.global.security.SecurityUser;
@@ -28,6 +29,15 @@ public class ChatQueryController {
     ) {
         long userId = user.getId();
         GetRoomMessagesResponse response = chatService.getMessages(userId, roomId, cursor, size);
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/unread-count")
+    public ApiResponse<GetUnreadChatCountResponse> getUnreadCount(
+            @AuthenticationPrincipal SecurityUser user,
+            @PathVariable Long roomId
+    ) {
+        GetUnreadChatCountResponse response = chatService.getUnreadCount(user.getId(), roomId);
         return ApiResponse.ok(response);
     }
 }
