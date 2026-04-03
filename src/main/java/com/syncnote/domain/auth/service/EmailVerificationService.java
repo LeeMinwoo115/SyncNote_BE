@@ -43,7 +43,7 @@ public class EmailVerificationService {
         emailVerificationRepository.save(emailVerification);
 
         String frontendBaseUrl = frontendUrlResolver.resolveBaseUrl();
-        String verifyUrl = frontendBaseUrl + "/email-verification?token=" + token;
+        String verifyUrl = frontendBaseUrl + "/auth/email-verification?token=" + token;
         emailService.sendVerificationEmail(email, verifyUrl);
     }
 

@@ -36,8 +36,6 @@ public class AuthService {
 
     @Transactional
     public AuthResponse signup(SignupRequest request, UserRole role) {
-        emailVerificationService.validateVerifiedEmail(request.email());
-
         if (userRepository.existsByEmail(request.email())) {
             throw new ErrorException(AuthErrorCode.ALREADY_EXIST_EMAIL);
         }
@@ -50,8 +48,6 @@ public class AuthService {
                 .nickname(request.nickname())
                 .role(role)
                 .build();
-
-        user.verifyEmail();
 
         User savedUser = userRepository.save(user);
 
@@ -69,6 +65,10 @@ public class AuthService {
 
         User user = userRepository.findByEmailAndDeletedAtIsNull(request.email())
                 .orElseThrow(() -> new ErrorException(AuthErrorCode.LOGIN_FAILED));
+
+        if (!user.isEmailVerified()) {
+            user.verifyEmail();
+        }
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new ErrorException(AuthErrorCode.LOGIN_FAILED);
