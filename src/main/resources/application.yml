@@ -36,6 +36,16 @@ spring:
     locations: classpath:db/migration
     schemas: public
     default-schema: public
+  mail:
+    host: smtp.gmail.com
+    username: ${MAIL_ADDRESS}
+    password: ${MAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 logging:
   level:
@@ -86,3 +96,10 @@ custom:
 security:
   password:
     bcrypt-strength: 4
+
+app:
+  frontend:
+    default-base-url: https://www.mmm3.click
+    allowed-base-urls:
+      - https://www.mmm3.click
+      - http://localhost:5173

@@ -32,9 +32,12 @@ public class AuthService {
     private final AuthTokenService authTokenService;
     private final HttpRequestContext httpRequestContext;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final EmailVerificationService emailVerificationService;
 
     @Transactional
     public AuthResponse signup(SignupRequest request, UserRole role) {
+        emailVerificationService.validateVerifiedEmail(request.email());
+
         if (userRepository.existsByEmail(request.email())) {
             throw new ErrorException(AuthErrorCode.ALREADY_EXIST_EMAIL);
         }

@@ -48,6 +48,9 @@ public class User extends BaseEntity {
     @Column(name = "provider_id")
     private String providerId;
 
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified;
+
     @Builder
     public User(String email, String nickname, String password,
                 UserRole role, LocalDateTime deletedAt, ProviderType providerType,
