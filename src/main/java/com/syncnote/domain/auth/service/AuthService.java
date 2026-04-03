@@ -51,6 +51,8 @@ public class AuthService {
                 .role(role)
                 .build();
 
+        user.verifyEmail();
+
         User savedUser = userRepository.save(user);
 
         JwtDto tokens = authTokenService.issueTokens(savedUser, UUID.randomUUID().toString(), 1);
@@ -63,6 +65,8 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
+        emailVerificationService.validateVerifiedEmail(request.email());
+
         User user = userRepository.findByEmailAndDeletedAtIsNull(request.email())
                 .orElseThrow(() -> new ErrorException(AuthErrorCode.LOGIN_FAILED));
 
